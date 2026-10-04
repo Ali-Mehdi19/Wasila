@@ -15,9 +15,6 @@ export default function Home() {
           <Link href="/login" className="btn-primary" style={{ fontSize: "1.125rem", padding: "1rem 2rem" }}>
             Get Started
           </Link>
-          <Link href="/chat" className="btn-secondary" style={{ fontSize: "1.125rem", padding: "1rem 2rem" }}>
-            Try Chatbot
-          </Link>
         </div>
       </section>
 

@@ -12,8 +12,10 @@ export default function Login() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (username === "admin" && password === "pass123") {
+      localStorage.setItem("role", "admin");
       router.push("/admin");
     } else if (username === "user" && password === "pass123") {
+      localStorage.setItem("role", "user");
       router.push("/dashboard");
     } else {
       setError("Invalid username or password");
