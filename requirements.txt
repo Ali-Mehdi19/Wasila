@@ -1,0 +1,8 @@
+flask>=3.0
+qdrant-client>=1.12
+fastembed>=0.5
+openai>=2.0
+requests>=2.31
+python-dotenv>=1.0
+pypdf>=5.0
+pytest>=8.0

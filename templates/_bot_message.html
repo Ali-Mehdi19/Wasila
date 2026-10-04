@@ -1,0 +1,22 @@
+<article class="msg msg-bot" id="{{ 'latest' if is_last else m.id }}">
+  <div class="avatar" aria-hidden="true">و</div>
+  <div class="bubble{% if m.failed %} bubble-error{% endif %}">
+    {% if m.emergency %}
+    <p class="emergency">If this is a medical emergency, call <strong>112</strong> (or <strong>108</strong> for an ambulance) right away.</p>
+    {% endif %}
+    <div class="answer">{{ m.content | cite(m.id) }}</div>
+    {% if m.sources %}
+    <details class="sources" open>
+      <summary>Sources</summary>
+      <ol>
+        {% for s in m.sources %}
+        <li id="{{ m.id }}-s{{ s.number }}" value="{{ s.number }}">
+          <span class="source-title">{{ s.title }}</span>{% if s.section %} <span class="muted">· {{ s.section }}</span>{% endif %}
+          <span class="source-file">{{ s.source }}</span>
+        </li>
+        {% endfor %}
+      </ol>
+    </details>
+    {% endif %}
+  </div>
+</article>

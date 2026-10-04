@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Helpdesk{% endblock %}
+{% block main_class %}helpdesk-page{% endblock %}
+{% block content %}
+<div class="chat-head">
+  <div>
+    <h1>Wasila Helpdesk</h1>
+    <p class="muted">Type or talk. Answers come only from the Jamaat's verified documents, with the source shown.</p>
+  </div>
+  {% if messages %}
+  <form method="post" action="{{ url_for('clear_chat') }}">
+    <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+    <button class="btn btn-ghost" type="submit">New chat</button>
+  </form>
+  {% endif %}
+</div>
+
+<div class="helpdesk-layout{% if not avatar_configured %} no-avatar{% endif %}" id="helpdesk"
+     data-csrf="{{ csrf_token() }}"
+     data-ask-url="{{ url_for('api_ask') }}"
+     data-start-url="{{ url_for('avatar_start') }}"
+     data-stop-url="{{ url_for('avatar_stop') }}">
+
+  {% if avatar_configured %}
+  <section class="stage">
+    <div class="video-frame">
+      <video id="avatar-video" autoplay playsinline></video>
+      <audio id="avatar-audio" autoplay></audio>
+      <div class="video-overlay" id="overlay">
+        <span class="brand-mark big" aria-hidden="true">و</span>
+        <p id="overlay-text">Talk to Wasila face to face.</p>
+      </div>
+      <span class="status-pill" id="status" data-state="idle">Not connected</span>
+    </div>
+    <div class="controls">
+      <button class="btn btn-primary" id="start-btn" type="button">Start talking</button>
+      <button class="btn btn-ghost" id="mic-btn" type="button" hidden aria-pressed="true">Mute mic</button>
+      <button class="btn btn-ghost" id="stop-btn" type="button" hidden>End</button>
+    </div>
+    <p class="muted small">Your browser will ask for microphone access. A spoken session lasts up to 5 minutes.</p>
+  </section>
+  {% endif %}
+
+  <section class="conversation">
+    <div class="chat-log" id="chat-log" aria-live="polite">
+      {% if not messages %}
+      <div class="welcome" id="welcome">
+        <h2>Salaam! How can I help?</h2>
+        <p class="muted">Ask about documents, forms, eligibility or which office handles a service.</p>
+        <form method="post" action="{{ url_for('ask') }}" class="suggestions">
+          <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+          {% for q in suggestions %}
+          <button class="chip" type="submit" name="question" value="{{ q }}">{{ q }}</button>
+          {% endfor %}
+        </form>
+      </div>
+      {% endif %}
+
+      {% for m in messages %}
+      {% set is_last = loop.last %}
+      {% if m.role == 'user' %}
+      <div class="msg msg-user"><div class="bubble">{{ m.content }}</div></div>
+      {% else %}
+      {% include "_bot_message.html" %}
+      {% endif %}
+      {% endfor %}
+    </div>
+
+    <form class="composer" id="composer" method="post" action="{{ url_for('ask') }}">
+      <input type="hidden" name="csrf" value="{{ csrf_token() }}">
+      <label class="sr-only" for="question">Your question</label>
+      <textarea id="question" name="question" rows="2" maxlength="1000" required autofocus
+                placeholder="Type your question… (please don't share Aadhaar, PAN or bank numbers)"></textarea>
+      <button class="btn btn-primary" type="submit">Send</button>
+    </form>
+  </section>
+</div>
+<p class="disclaimer">Wasila does not give medical or religious advice. Religious questions (masail) are referred to the Jamaat's aalim.</p>
+{% endblock %}
+
+{% block scripts %}
+{% if avatar_configured %}
+<script src="https://cdn.jsdelivr.net/npm/livekit-client@2.15.7/dist/livekit-client.umd.min.js"></script>
+{% endif %}
+<script src="{{ url_for('static', filename='js/helpdesk.js') }}"></script>
+{% endblock %}
