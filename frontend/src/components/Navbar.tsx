@@ -27,12 +27,12 @@ export default function Navbar() {
           <span className="nav-logo-icon">●</span> Wasila
         </Link>
         <div className="nav-links">
-          {role === "admin" ? (
-            <Link href="/admin" className="nav-link">Admin Dashboard</Link>
-          ) : (
-            <Link href="/dashboard" className="nav-link">Dashboard</Link>
+          {role !== "admin" && (
+            <>
+              <Link href="/dashboard" className="nav-link">Dashboard</Link>
+              <Link href="/documents" className="nav-link">Documents</Link>
+            </>
           )}
-          <Link href="/documents" className="nav-link">Documents</Link>
           <Link href="/login" onClick={handleSignOut} className="btn-secondary" style={{ padding: "0.5rem 1rem", fontSize: "0.875rem" }}>
             Sign Out
           </Link>
